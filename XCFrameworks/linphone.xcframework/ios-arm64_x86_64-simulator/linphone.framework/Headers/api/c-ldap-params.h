@@ -145,8 +145,8 @@ LINPHONE_PUBLIC const char *linphone_ldap_params_get_base_object(const LinphoneL
 /*************************************************************************************/
 
 /**
- * @brief Timeout for requests in seconds. It limits the time for searchs and the value is passed to Ldap with `LDAP_OPT_NETWORK_TIMEOUT`.
- * Default value : 5.
+ * @brief Timeout for requests in seconds. It limits the time for searchs and the value is passed to Ldap with
+ *`LDAP_OPT_NETWORK_TIMEOUT`. Default value : 5.
  *
  * @param params The #LinphoneLdapParams object. @notnil
  * @param timeout The timeout in seconds.
@@ -332,7 +332,7 @@ LINPHONE_PUBLIC const char *linphone_ldap_params_get_sip_attribute(const Linphon
 /*************************************************************************************/
 
 /**
- * @brief Add the domain to the sip address(sip:username@domain).
+ * @brief Add the domain to the sip address(sip:username\@domain).
  * By default or if it is empty, the domain will be specify while searching on the current proxy account.
  * Default value : "".
  *
@@ -342,12 +342,12 @@ LINPHONE_PUBLIC const char *linphone_ldap_params_get_sip_attribute(const Linphon
 LINPHONE_PUBLIC void linphone_ldap_params_set_sip_domain(LinphoneLdapParams *params, const char *sip_domain);
 
 /**
- * @brief Get the domain to the sip address(sip:username@domain).
+ * @brief Get the domain to the sip address(sip:username\@domain).
  *
  * @param params The #LinphoneLdapParams object. @notnil
  * @return The SIP domain for the friend. @maybenil
  **/
-LINPHONE_PUBLIC const char *linphone_ldap_params_get_sip_domain(const LinphoneLdapParams *param);
+LINPHONE_PUBLIC const char *linphone_ldap_params_get_sip_domain(const LinphoneLdapParams *params);
 
 /*************************************************************************************/
 
@@ -371,21 +371,19 @@ LINPHONE_PUBLIC bool_t linphone_ldap_params_get_enabled(const LinphoneLdapParams
 /*************************************************************************************/
 
 /**
- * @brief The dns resolution is done by Linphone using Sal. It will pass an IP to LDAP. By doing that, the TLS
- *negociation could not check the hostname. You may deactivate the verifications if wanted to force the connection.
- * Default value : FALSE.
+ * @brief Handle the DNS resolution using liblinphone's own resolver, which allows to use DNS SRV records.
+ * Default value : TRUE.
  *
  * @param params The #LinphoneLdapParams object. @notnil
- * @param enable Enable or not the use of sal.
+ * @param enable Enable or not the use of own DNS resolver.
  **/
 LINPHONE_PUBLIC void linphone_ldap_params_enable_sal(LinphoneLdapParams *params, bool_t enable);
 
 /**
- * @brief Return if the dns resolution is done by Linphone using Sal. It will pass an IP to LDAP. By doing that, the TLS
- *negociation could not check the hostname. You may deactivate the verifications if wanted to force the connection.
+ * @brief Handle the DNS resolution using liblinphone's own resolver, which allows to use DNS SRV records.
  *
  * @param params The #LinphoneLdapParams object. @notnil
- * @return Enable or not the use of sal.
+ * @return whether liblinphone'own DNS resolver is used.
  **/
 LINPHONE_PUBLIC bool_t linphone_ldap_params_sal_enabled(const LinphoneLdapParams *params);
 

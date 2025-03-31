@@ -160,7 +160,7 @@ LINPHONE_PUBLIC unsigned int linphone_logging_service_get_log_level_mask(const L
  * @param max_size The maximal size of each part of the log. The log rotating is triggered
  * each time the currently opened log part reach that limit.
  */
-LINPHONE_PUBLIC void linphone_logging_service_set_log_file(const LinphoneLoggingService *log_service,
+LINPHONE_PUBLIC void linphone_logging_service_set_log_file(LinphoneLoggingService *log_service,
                                                            const char *dir,
                                                            const char *filename,
                                                            size_t max_size);
@@ -266,7 +266,7 @@ linphone_logging_service_cbs_get_log_message_written(const LinphoneLoggingServic
 /**
  * @brief Pass a pointer on a custom object.
  *
- * That pointer can be get back by callbacks by using #linphone_logging_service_get_cbs() and
+ * That pointer can be get back by callbacks by using #linphone_logging_service_get_callbacks() and
  * #linphone_logging_service_cbs_get_user_data().
  * @param cbs the #LinphoneLoggingServiceCbs object. @notnil
  * @param user_data the user data pointer. @maybenil

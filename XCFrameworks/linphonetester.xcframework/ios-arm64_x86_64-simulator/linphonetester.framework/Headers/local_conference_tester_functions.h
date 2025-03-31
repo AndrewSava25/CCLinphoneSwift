@@ -249,10 +249,16 @@ public:
 	}
 
 	void registerAsParticipantDevice(ClientConference &otherMgr) {
-		const LinphoneAddress *cAddr = linphone_proxy_config_get_contact(otherMgr.getDefaultProxyConfig());
-		Address participantDevice = Address::toCpp(const_cast<LinphoneAddress *>(cAddr))->getUri();
-		Address participant = participantDevice.getUriWithoutGruu();
-		mParticipantDevices.insert({participant, participantDevice});
+		const bctbx_list_t *accounts = linphone_core_get_account_list(otherMgr.getLc());
+		for (const bctbx_list_t *accountIt = accounts; accountIt != NULL; accountIt = accountIt->next) {
+			LinphoneAccount *account = (LinphoneAccount *)bctbx_list_get_data(accountIt);
+			const LinphoneAddress *cAddr = linphone_account_get_contact_address(account);
+			if (cAddr) {
+				Address participantDevice = Address::toCpp(cAddr)->getUri();
+				Address participant = participantDevice.getUriWithoutGruu();
+				mParticipantDevices.insert({participant, participantDevice});
+			}
+		}
 		// to allow client conference to delete chatroom in its destructor
 		otherMgr.setFocus(borrowed_mut(this));
 	}
@@ -362,15 +368,18 @@ private:
 		linphone_config_set_int(linphone_core_get_config(getLc()), "misc", "hide_chat_rooms_from_removed_proxies", 0);
 		linphone_core_enable_rtp_bundle(getLc(), TRUE);
 
-		LinphoneAccount *account = linphone_core_get_default_account(getLc());
-		const LinphoneAccountParams *account_params = linphone_account_get_params(account);
-		LinphoneAccountParams *new_account_params = linphone_account_params_clone(account_params);
-		linphone_account_params_enable_rtp_bundle(new_account_params, TRUE);
-		Address factoryAddress = getIdentity();
-		linphone_account_params_set_conference_factory_address(new_account_params, factoryAddress.toC());
-		linphone_account_set_params(account, new_account_params);
-		linphone_account_params_unref(new_account_params);
-		BC_ASSERT_TRUE(linphone_account_params_rtp_bundle_enabled(linphone_account_get_params(account)));
+		const bctbx_list_t *accounts = linphone_core_get_account_list(getLc());
+		for (const bctbx_list_t *account_it = accounts; account_it != NULL; account_it = account_it->next) {
+			LinphoneAccount *account = (LinphoneAccount *)(bctbx_list_get_data(account_it));
+			const LinphoneAccountParams *account_params = linphone_account_get_params(account);
+			LinphoneAccountParams *new_account_params = linphone_account_params_clone(account_params);
+			linphone_account_params_enable_rtp_bundle(new_account_params, TRUE);
+			linphone_account_params_set_conference_factory_address(
+			    new_account_params, linphone_account_params_get_identity_address(account_params));
+			linphone_account_set_params(account, new_account_params);
+			linphone_account_params_unref(new_account_params);
+			BC_ASSERT_TRUE(linphone_account_params_rtp_bundle_enabled(linphone_account_get_params(account)));
+		}
 
 		linphone_core_cbs_set_subscription_state_changed(cbs, linphone_subscription_state_change);
 		linphone_core_cbs_set_chat_room_state_changed(cbs, server_core_chat_room_state_changed);
@@ -457,6 +466,8 @@ void create_one_participant_conference_toggle_video_base(LinphoneConferenceLayou
                                                          bool_t enable_stun);
 
 void create_conference_with_active_call_base(bool_t dialout);
+
+void check_conference_me(LinphoneConference *conference, bool_t is_me);
 
 LinphoneAddress *
 create_conference_on_server(Focus &focus,

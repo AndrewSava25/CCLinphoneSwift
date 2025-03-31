@@ -132,7 +132,7 @@ LINPHONE_PUBLIC void linphone_chat_message_set_current_callbacks(LinphoneChatMes
 
 /**
  * @brief Gets the list of listener in the account.
- * @param account #LinphoneConferenceScheduler object. @notnil
+ * @param conference_scheduler #LinphoneConferenceScheduler object. @notnil
  * @return The list of #LinphoneConferenceSchedulerCbs. @maybenil
  * @donotwrap
  */
@@ -141,7 +141,7 @@ linphone_conference_scheduler_get_callbacks_list(const LinphoneConferenceSchedul
 
 /**
  * Sets the current LinphoneConferenceSchedulerCbs.
- * @param account #LinphoneConferenceScheduler object. @notnil
+ * @param conference_scheduler #LinphoneConferenceScheduler object. @notnil
  * @param cbs The #LinphoneConferenceSchedulerCbs object. @maybenil
  * @donotwrap
  */
@@ -176,6 +176,15 @@ LINPHONE_PUBLIC void linphone_chat_room_allow_cpim(LinphoneChatRoom *room);
  * @donotwrap
  */
 LINPHONE_PUBLIC const bctbx_list_t *linphone_magic_search_get_callbacks_list(const LinphoneMagicSearch *magic_search);
+
+/* These 2 functions are needed for C# wrapper, in order to serialize string arrays */
+LINPHONE_PUBLIC char *linphone_pointer_to_string(const void *ptr);
+/* return value needs to be freed with bctbx_free(). */
+LINPHONE_PUBLIC void *linphone_string_to_pointer(const char *ptr);
+
+/* Since C# wrapper can only translate to UTF-8, force the whole process to assume
+ * strings are UTF-8 encoded */
+LINPHONE_PUBLIC LinphoneStatus linphone_force_utf8(void);
 
 /************ */
 /* DEPRECATED */
